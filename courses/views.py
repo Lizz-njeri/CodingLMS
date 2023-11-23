@@ -68,7 +68,8 @@ class EnrollCourse(LoginRequiredMixin, generic.RedirectView):
         else:
             messages.success(self.request, 'You are now enrolled in the course.')
 
-            user_profile, created = UserProfile.objects.get_or_create(user=self.request.user, defaults={'phone': '+254714805460'})
+            #user_profile, created = User.objects.get_or_create(user=self.request.user, defaults={'phone': ''})
+            user_profile=self.request.user
             if user_profile.phone:
                 try:
                     response = sms.send(message, [user_profile.phone])
