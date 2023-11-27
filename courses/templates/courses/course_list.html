@@ -1,11 +1,11 @@
-{% extends 'courses/course_base.html' %} 
+ {% extends 'courses/course_base.html' %} 
 
 {% block title_name %}
   LMS - Courses
 {% endblock title_name %}
   
 {% block main_content %}
-<div class="container">
+<div class="container"  style="background: url('https://res.cloudinary.com/dnsmax0s7/image/upload/v1700751630/Fldj9VGXkAEHdlS_eq2a6h.jpg') center/cover no-repeat;">
   <div>
     <h1>All Courses</h1>
 
@@ -20,9 +20,9 @@
   </div>
     <div class="card-deck">
       {% for course_item in object_list %}
-      <div>
+      <div >
       <div class="card" style="width: 18rem">
-        <div class="card-body">
+        <div class="card-body" >
           <h5 class="card-title">{{course_item.course_name}}</h5>
           <h6 class="card-subtitle mb-2 text-muted">{{course_item.teacher}}</h6>
           <p class="card-text">
