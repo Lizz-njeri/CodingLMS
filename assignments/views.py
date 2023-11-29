@@ -16,16 +16,53 @@ from users.models import User
 from assignments.models import Assignment, SubmitAssignment
 from assignments.forms import GradeAssignmentForm, CreateAssignmentForm, SubmitAssignmentForm
 from courses.models import Course
+from courses.models import Enrollment
+import africastalking
 
 # Create your views here.    
 class CreateAssignment(LoginRequiredMixin, generic.CreateView):
     form_class = CreateAssignmentForm
     template_name = 'assignments/create_assignment_form.html'
-
+    
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+    
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        # Add your SMS notification logic here
+        try:
+            #assignment_title = form.cleaned_data['title']
+            course_name = form.cleaned_data['course'].course_name
+            message = f"New assignment added for {course_name}"
+            
+            # Replace these with your Africa's Talking API credentials
+            username = 'mara'
+            api_key = '55f38e89922b55d676dd8d042eca952767a592b90d1fb8910c987c4a7a749650'
+            
+            # Initialize the SMS service
+            africastalking.initialize(username, api_key)
+            sms = africastalking.SMS
+
+            # Specify the recipient's phone number
+            for enrollment in form.cleaned_data['course'].enrollments.all():
+                student_phone = enrollment.student.phone
+        
+             # Replace with the actual phone number
+
+            # Send the SMS
+            response = sms.send(message, [student_phone])
+
+            # Log the response (optional)
+            print(response)
+
+        except Exception as e:
+            # Handle SMS error
+            print(f"SMS sending failed: {e}")
+        return HttpResponseRedirect(reverse('courses:list'))
+
 
 class UpdateAssignment(LoginRequiredMixin, generic.UpdateView):
     model = Assignment
